@@ -1,26 +1,15 @@
-package repository
+package mocks
 
 import (
 	"fmt"
 	"goredis/internal/core/domains"
-	"goredis/internal/core/ports"
 	"math/rand"
 	"time"
 
 	"gorm.io/gorm"
 )
 
-type productRepositoryDB struct {
-	db *gorm.DB
-}
-
-func NewProductRepositoryDB(db *gorm.DB) ports.ProductRepository {
-	db.AutoMigrate(&domains.Product{})
-	mockData(db)
-	return productRepositoryDB{db}
-}
-
-func mockData(db *gorm.DB) error {
+func MockData(db *gorm.DB) error {
 	var count int64
 	db.Model(&domains.Product{}).Count(&count)
 	if count > 0 {
@@ -37,9 +26,4 @@ func mockData(db *gorm.DB) error {
 	}
 	return db.Create(&products).Error
 
-}
-
-func (r productRepositoryDB) GetProduct() (products []domains.Product, err error) {
-	err = r.db.Order("quantity desc").Limit(30).Find(&products).Error
-	return products, err
 }

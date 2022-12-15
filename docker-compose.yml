@@ -40,7 +40,10 @@ services:
   mariadb:
     image: mariadb
     container_name: mariadb
+    environment:
+      - MARIADB_ROOT_PASSWORD=4@@4
+      - MARIADB_DATABASE=productsDB
     ports:
-      - 3306:3306
+      - 3307:3307
     volumes:
       - ./data/mariadb:/var/lib/mysql

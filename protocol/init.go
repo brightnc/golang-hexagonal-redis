@@ -1,16 +1,25 @@
 package protocol
 
-import "goredis/repository"
+import (
+	"goredis/database"
+	"goredis/internal/core/ports"
+	"goredis/internal/core/services"
+	"goredis/internal/repository"
+)
 
 var app *application
 
 type application struct {
-	svr *service.CustomerService
+	svr ports.CatalogService
 }
 
 func init() {
-	custRepository := repository.NewProductRepositoryDB()
+	db := database.InitDatabase()
+	redis := database.InitRedis()
+	_ = redis
+	productRepo := repository.NewProductRepositoryRedis(db, redis)
+	productSrv := services.NewCatalogService(productRepo)
 	app = &application{
-		svr: &custService,
+		svr: productSrv,
 	}
 }
